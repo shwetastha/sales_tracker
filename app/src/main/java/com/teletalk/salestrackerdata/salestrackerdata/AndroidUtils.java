@@ -117,11 +117,13 @@ public class AndroidUtils {
     protected static String getOperator(Context c){
         TelephonyManagerEx tm = new TelephonyManagerEx(c);
 //        tm.getDataActivity(0)
-        if (!tm.getSimOperator(0).equalsIgnoreCase("")||!(tm.getSimOperator(0)==null))
+        if (tm.getSimState(0)==TelephonyManager.SIM_STATE_READY)
             return tm.getSimOperatorName(0);
-        else if (!tm.getSimOperator(1).equalsIgnoreCase("")||!(tm.getSimOperator(1)==null))
+
+        if (tm.getSimState(1)==TelephonyManager.SIM_STATE_READY)
             return tm.getSimOperatorName(1);
-        else
+
+
             return "";
     }
     protected static boolean simExists(Context c){
