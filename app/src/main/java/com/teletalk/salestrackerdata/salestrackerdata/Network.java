@@ -24,10 +24,10 @@ public class Network extends Service {
 
             int status = NetworkUtil.getConnectivityStatusString(context);
             String msgSentStatus = AndroidUtils.getfileContent(context, AndroidUtils.MSG_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
-//            Toast.makeText(getApplication(), "Network class pugyo", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplication(), "Network class pugyo", Toast.LENGTH_LONG).show();
 
             if (status == 1 && msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N) && AndroidUtils.isSimConnected(context)) {
-//                Toast.makeText(context, "Internet is working", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Internet is working", Toast.LENGTH_LONG).show();
                 Log.w("SalesTrackerData:", "Network: Internet is Working.");
 //                Toast.makeText(context, "network class ko if ni pugyo", Toast.LENGTH_LONG).show();
 

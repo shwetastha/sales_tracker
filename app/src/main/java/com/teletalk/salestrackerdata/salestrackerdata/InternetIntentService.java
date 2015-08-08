@@ -57,7 +57,7 @@ public class InternetIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent arg0) {
         // TODO Auto-generated method stub
-       // Toast.makeText(getApplication(),"intentINtent", Toast.LENGTH_LONG).show();
+//        Toast.makeText(getApplication(),"intentINtent", Toast.LENGTH_LONG).show();
         Log.w("SalesTrackerData:", "Network: Internet is Working.");
 
         imei = AndroidUtils.getImei(getApplicationContext());
@@ -84,13 +84,16 @@ public class InternetIntentService extends IntentService {
             if (response.equalsIgnoreCase("true")) {
                 AndroidUtils.dataSentTrigger(getApplicationContext());
             } else {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.SECOND, 10);
-                Intent i = new Intent(getApplicationContext(), Alarm_Receiver.class);
-                AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-                PendingIntent pending = PendingIntent.getBroadcast(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
-                //set the alarm for particular time
-                alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pending);
+//                Calendar cal = Calendar.getInstance();
+//                cal.add(Calendar.SECOND, 10);
+//                Intent i = new Intent(getApplicationContext(), Alarm_Receiver.class);
+//                AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//                PendingIntent pending = PendingIntent.getBroadcast(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+//                //set the alarm for particular time
+//                alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pending);
+
+                Intent service = new Intent(getApplicationContext(), Network.class);
+                getApplicationContext().startService(service);
             }
             Log.w("SalesTrackerData", "Response= " + response);
         }
