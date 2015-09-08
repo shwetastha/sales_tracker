@@ -21,8 +21,9 @@ public class ShutDownReceiver extends BroadcastReceiver {
         Integer difference = curTime - prevTime;
         Log.w("SalesTracker:ShutDownReciever", "TimeDiff" + difference.toString());
         try {
-            if (difference < 0) {
+            if (difference < 0 || prevTime==0) {
                 AndroidUtils.writeToFile(context, AndroidUtils.TIMER_TO_SUBTRACT, "0");
+                //11934210
             } else {
                 AndroidUtils.writeToFile(context, AndroidUtils.TIMER_TO_SUBTRACT, difference.toString());
             }

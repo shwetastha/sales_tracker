@@ -77,7 +77,7 @@ public class AndroidUtils {
             try {
                 FileOutputStream f = context.openFileOutput(filename + ".txt", Context.MODE_PRIVATE);
                 f.write(fileContent.getBytes());
-                Log.w("SalesTracker:AndroidUtils", "Get File File created " + filename + ".txt value "+temp);
+                Log.w("SalesTracker:AndroidUtils", "Get File File created " + filename + ".txt value " + temp);
 
                 f.close();
 //                Toast.makeText(context, "File is created for the first time", Toast.LENGTH_LONG).show();
@@ -97,11 +97,11 @@ public class AndroidUtils {
         FileOutputStream file = context.openFileOutput(key + ".txt", Context.MODE_PRIVATE);
         try {
             file.write(value.getBytes());
-            Log.w("SalesTracker:AndroidUtils", "Write To File " + key + ".txt value "+value);
+            Log.w("SalesTracker:AndroidUtils", "Write To File " + key + ".txt value " + value);
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.w("SalesTracker:AndroidUtils", "Excpetion occured. Write To File " + key + ".txt value "+value+". Exception= "+e.toString());
+            Log.w("SalesTracker:AndroidUtils", "Excpetion occured. Write To File " + key + ".txt value " + value + ". Exception= " + e.toString());
 
         } finally {
             file.flush();
@@ -110,51 +110,86 @@ public class AndroidUtils {
     }
 
     protected static String getImei(Context context) {
-        TelephonyManagerEx tm = new TelephonyManagerEx(context);
-        return tm.getDeviceId(0);
+        try {
+            TelephonyManagerEx tm = new TelephonyManagerEx(context);
+            return tm.getDeviceId(0);
+        } catch (NoClassDefFoundError e) {
+            TelephonyManager tm = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
+            return tm.getDeviceId();
+        }
     }
 
-    protected static String getOperator(Context c){
-        TelephonyManagerEx tm = new TelephonyManagerEx(c);
-//        tm.getDataActivity(0)
-        if (tm.getSimState(0)==TelephonyManager.SIM_STATE_READY)
-            return tm.getSimOperatorName(0);
+    protected static String getOperator(Context c) {
+        try {
+            TelephonyManagerEx tm = new TelephonyManagerEx(c);
+            if (tm.getSimState(0) == TelephonyManager.SIM_STATE_READY)
+                return tm.getSimOperatorName(0);
 
-        if (tm.getSimState(1)==TelephonyManager.SIM_STATE_READY)
-            return tm.getSimOperatorName(1);
-
+            if (tm.getSimState(1) == TelephonyManager.SIM_STATE_READY)
+                return tm.getSimOperatorName(1);
+            return "";
+        } catch (NoClassDefFoundError e) {
+            TelephonyManager tm = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
+            if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
+                return tm.getSimOperatorName();
 
             return "";
-    }
-    protected static boolean simExists(Context c){
-        TelephonyManagerEx tm = new TelephonyManagerEx(c);
-//        tm.getDataActivity(0)
-        if (tm.getSimState(0)==TelephonyManager.SIM_STATE_READY
-                || tm.getSimState(1)==TelephonyManager.SIM_STATE_READY )
-            return true;
-        else
-            return false;
+        }
+
     }
 
-    protected static String getCountryIso(Context c){
-        TelephonyManagerEx tm = new TelephonyManagerEx(c);
-//        tm.getDataActivity(0)
-        if (tm.getSimState(0)== TelephonyManager.SIM_STATE_READY)
-            return tm.getSimCountryIso(0);
-        else if (tm.getSimState(1)== TelephonyManager.SIM_STATE_READY)
-            return tm.getSimCountryIso(1);
-        else
-            return "";
+    protected static boolean simExists(Context c) {
+        try {
+            TelephonyManagerEx tm = new TelephonyManagerEx(c);
+            if (tm.getSimState(0) == TelephonyManager.SIM_STATE_READY
+                    || tm.getSimState(1) == TelephonyManager.SIM_STATE_READY)
+                return true;
+            else
+                return false;
+        } catch (NoClassDefFoundError e) {
+            TelephonyManager tm = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
+            if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
+                return true;
+            else
+                return false;
+        }
+
     }
 
-    protected static boolean isSimConnected(Context c){
-        TelephonyManagerEx tm = new TelephonyManagerEx(c);
-        if (!tm.getSimOperator(0).equalsIgnoreCase("")||!(tm.getSimOperator(0)==null))
-            return true;
-        else if (!tm.getSimOperator(1).equalsIgnoreCase("")||!(tm.getSimOperator(1)==null))
-            return true;
-        else
-            return false;
+    protected static String getCountryIso(Context c) {
+        try {
+            TelephonyManagerEx tm = new TelephonyManagerEx(c);
+            if (tm.getSimState(0) == TelephonyManager.SIM_STATE_READY)
+                return tm.getSimCountryIso(0);
+            else if (tm.getSimState(1) == TelephonyManager.SIM_STATE_READY)
+                return tm.getSimCountryIso(1);
+            else
+                return "";
+        } catch (NoClassDefFoundError e) {
+            TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+            if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
+                return tm.getSimCountryIso();
+            else
+                return "";
+        }
+    }
+
+    protected static boolean isSimConnected(Context c) {
+        try {
+            TelephonyManagerEx tm = new TelephonyManagerEx(c);
+            if (!tm.getSimOperator(0).equalsIgnoreCase("") || !(tm.getSimOperator(0) == null))
+                return true;
+            else if (!tm.getSimOperator(1).equalsIgnoreCase("") || !(tm.getSimOperator(1) == null))
+                return true;
+            else
+                return false;
+        } catch (NoClassDefFoundError noClassDefFoundError) {
+            TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+            if (!tm.getSimOperator().equalsIgnoreCase("") || !(tm.getSimOperator() == null))
+                return true;
+            else
+                return false;
+        }
     }
 
 
@@ -183,10 +218,11 @@ public class AndroidUtils {
     }
 
 
-    public static void setTIMER(Context c) throws IOException{
+    public static void setTIMER(Context c) throws IOException {
         AndroidUtils.setToFile(c, "timer", TIMER);
 
     }
+
     public static void setTIMER(String timer, Context c) throws IOException {
         AndroidUtils.setToFile(c, "timer", timer);
     }
@@ -194,12 +230,13 @@ public class AndroidUtils {
     protected static String getTimer(Context c) {
         //            Toast.makeText(c, "Timer="+obj.getString("timer"),Toast.LENGTH_LONG).show();
         String timerString = getfileContent(c, "timer", TIMER);
-        Log.w("SalesTrackerSMS", "Timer="+TIMER);
+        Log.w("SalesTrackerSMS", "Timer=" + TIMER);
 
-        int timerInt = Integer.parseInt(timerString) * 1000 *60;
+        int timerInt = Integer.parseInt(timerString) * 1000 * 60;
         Log.w("SalesTrackerSMS", "Timer=" + String.valueOf(timerInt));
         return String.valueOf(timerInt);
     }
+
     protected static String getTimerHome(Context c) {
         //            Toast.makeText(c, "Timer="+obj.getString("timer"),Toast.LENGTH_LONG).show();
         return getfileContent(c, "timer", TIMER);
@@ -210,13 +247,13 @@ public class AndroidUtils {
             FileInputStream fin = context.openFileInput(key + ".txt");
             fin.close();
 
-            Log.w("SalesTracker:AndroidUtils", "Already Exists!!Set To File " + key + ".txt with value "+value);
+            Log.w("SalesTracker:AndroidUtils", "Already Exists!!Set To File " + key + ".txt with value " + value);
         } catch (IOException e) {
             try {
                 FileOutputStream f = context.openFileOutput(key + ".txt", Context.MODE_PRIVATE);
                 f.write(value.getBytes());
                 f.close();
-                Log.w("SalesTracker:AndroidUtils", "Created and Set To File " + key + ".txt with value "+value);
+                Log.w("SalesTracker:AndroidUtils", "Created and Set To File " + key + ".txt with value " + value);
             } catch (FileNotFoundException e1) {
                 e1.printStackTrace();
             } catch (IOException e1) {
@@ -236,11 +273,11 @@ public class AndroidUtils {
             }
             //string temp contains all the data of the file.
             fin.close();
-            Log.w("SalesTracker:AndroidUtils", "Get File: " + filename + ".txt value "+temp);
+            Log.w("SalesTracker:AndroidUtils", "Get File: " + filename + ".txt value " + temp);
             return temp;
 
         } catch (Exception e) {
-            Log.w("SalesTracker:AndroidUtils", "Get File : " + filename + ".txt value "+temp+". Exception "+e.toString());
+            Log.w("SalesTracker:AndroidUtils", "Get File : " + filename + ".txt value " + temp + ". Exception " + e.toString());
             return temp;
         }
     }

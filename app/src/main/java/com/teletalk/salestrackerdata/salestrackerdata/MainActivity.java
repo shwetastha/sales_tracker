@@ -3,6 +3,7 @@ package com.teletalk.salestrackerdata.salestrackerdata;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ToggleButton;
+
+import com.mediatek.telephony.TelephonyManagerEx;
 
 import java.io.IOException;
 
@@ -75,6 +78,7 @@ public class MainActivity extends Activity {
 //                AndroidUtils.getPhNo(getApplication());
             }
         });
+
 
 
         timer.addTextChangedListener(new TextWatcher() {

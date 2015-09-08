@@ -17,7 +17,7 @@ import android.os.StrictMode;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.Toast;
+//import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -78,7 +78,7 @@ public class InternetIntentService extends IntentService {
                 && AndroidUtils.simExists(getApplicationContext()) ) {
 
             response = login();
-//            Toast.makeText(getApplication(), response, Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplication(), "Data output=>"+response, Toast.LENGTH_LONG).show();
             Log.w("SalesTrackerData:", "opearator " + operator);
 
             if (response.equalsIgnoreCase("true")) {

@@ -11,7 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
-import android.widget.Toast;
+//import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -22,7 +22,7 @@ public class BootComplete extends BroadcastReceiver {
         // TODO Auto-generated method stub
 //        Toast.makeText(context, "Boot Complete.", Toast.LENGTH_LONG).show();
 
-    //    Toast.makeText(context,"bootcomplete",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context,"PowerOn",Toast.LENGTH_SHORT).show();
         Log.w("SalesTrackerData:", "BootComplete.");
         String timerComplete = AndroidUtils.getfileContent(context, AndroidUtils.TIMER_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
         String msgSentStatus = AndroidUtils.getfileContent(context, AndroidUtils.MSG_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
@@ -35,9 +35,7 @@ public class BootComplete extends BroadcastReceiver {
             AndroidUtils.getfileContent(context, AndroidUtils.TIMER_TO_SUBTRACT, "0");
             String timerToSubtract= AndroidUtils.getfileContent(context, AndroidUtils.TIMER_TO_SUBTRACT, "0");
             TIMER = TIMER - Integer.valueOf(timerToSubtract);
-           // Log.w("SalesTracker:Boot_Completion_Receiver", "Timer >" + TIMER);
-//
-//            Save start time
+            if (TIMER < 0 ){TIMER=0;}
             AndroidUtils.getfileContent(context, AndroidUtils.TIMER_STARTED_ON, String.valueOf(SystemClock.elapsedRealtime()));
            Intent i = new Intent(context, Alarm_Receiver.class);
 //
