@@ -2,6 +2,7 @@ package com.teletalk.salestrackerdata.salestrackerdata;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
@@ -75,7 +76,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 Intent service = new Intent(getApplicationContext(), Network.class);
                 getApplicationContext().startService(service);
-//                AndroidUtils.getPhNo(getApplication());
+                Log.w("Salestracker","IMEI="+AndroidUtils.getImei(getApplication()));
             }
         });
 

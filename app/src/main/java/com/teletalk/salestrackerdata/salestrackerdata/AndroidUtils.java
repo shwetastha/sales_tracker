@@ -16,10 +16,15 @@ import android.util.Log;
 import com.mediatek.telephony.SmsManagerEx;
 import com.mediatek.telephony.TelephonyManagerEx;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class AndroidUtils {
     protected static String TOGGLE_STATUS_FILE = "toggle";
@@ -109,13 +114,107 @@ public class AndroidUtils {
         }
     }
 
+    protected static String getSpectrumImeiNo(){
+        File imei1 = new File("/sdcard/.IMEI1.txt");
+        File imei2 = new File("/sdcard/.IMEI2.txt");
+
+        try {
+            imei1.createNewFile();
+            imei2.createNewFile();
+            FileOutputStream fOut = new FileOutputStream(imei1);
+            FileOutputStream fOut2 = new FileOutputStream(imei2);
+            OutputStreamWriter myOutWriter =
+                    new OutputStreamWriter(fOut);
+            OutputStreamWriter myOutWriter2 =
+                    new OutputStreamWriter(fOut2);
+            myOutWriter.close();
+            myOutWriter2.close();
+            fOut.close();
+            fOut2.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return "Exception";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Exception";
+
+        }
+
+
+        Process p;
+        try{
+            Process su = Runtime.getRuntime().exec("su");
+            DataOutputStream outputStream = new DataOutputStream(su.getOutputStream());
+            outputStream.writeBytes("dumpsys iphonesubinfo0 | grep 'Device ID' > /sdcard/.IMEI1.txt\n");
+            outputStream.writeBytes("dumpsys iphonesubinfo1 | grep 'Device ID' > /sdcard/.IMEI2.txt\n");
+            outputStream.flush();
+            outputStream.writeBytes("exit\n");
+            outputStream.flush();
+            su.waitFor();
+        }catch(IOException e){
+            try {
+                throw new Exception(e);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                return "Exception";
+
+            }
+        }catch(InterruptedException e){
+            try {
+                throw new Exception(e);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                return "Exception";
+
+            }
+        }
+
+        try {
+            FileInputStream fIn = new FileInputStream(imei1);
+//            FileInputStream fIn2 = new FileInputStream(imei2);
+            BufferedReader myReader = new BufferedReader(
+                    new InputStreamReader(fIn));
+//            BufferedReader myReader2 = new BufferedReader(
+//                    new InputStreamReader(fIn2));
+            String temp = "";
+            String c = "";
+            while ((c = myReader.readLine()) != null) {
+                temp += c;
+            }
+//            String str_imei1 = temp.substring(temp.indexOf("Device ID ="),15);
+            String temp2 = "";
+            String c2 = "";
+            while ((c2 = myReader.readLine()) != null) {
+                temp2 += c2;
+            }
+//            String str_imei2 = temp2.substring(temp2.indexOf("Device ID ="),15);
+            //string temp contains all the data of the file.
+//            tv.setText("imei1=" + temp.replace("Device ID = ", "") + "\n==imei2=" + temp2.replace("Device ID = ", ""));
+            myReader.close();
+            return temp.replace("Device ID = ", "");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return "Exception";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Exception";
+        }
+    }
+
     protected static String getImei(Context context) {
         try {
             TelephonyManagerEx tm = new TelephonyManagerEx(context);
             return tm.getDeviceId(0);
         } catch (NoClassDefFoundError e) {
-            TelephonyManager tm = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
-            return tm.getDeviceId();
+            try{
+                if (getSpectrumImeiNo().equalsIgnoreCase("Exception"))
+                    throw new Exception(e);
+                else
+                    return getSpectrumImeiNo() ;
+            }catch (Exception e1){
+                TelephonyManager tm = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
+                return tm.getDeviceId();
+            }
         }
     }
 
