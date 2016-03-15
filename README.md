@@ -1,29 +1,23 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Sales Tracker Data Application
 
-### What is this repository for? ###
+### Summary
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* This is an android application designed specifically to send information to a server through internet access.
+This application sends Imei no, Model no, Operator and Country_iso of android smart phone to server 202.166.205.39, which uses the following url
+"http://202.166.205.39/sales_tracker/insert.php". It reads dumpsys file to retrieve IMEI information.
+* Version 3.0
+* Git Remote Repo: https://shwetastha1@bitbucket.org/shwetastha1/sales_tracker_august_version
 
 ### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
+* Requirements:
+- Sim should be present in the sim slot.
+- App Only sends information once after bootcomplete.
+- Application toggle should be turned on.
+- Data Network should be working, either Wifi or Data from sim.
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+* Repo Owner: Shweta Shrestha(shweta.stha1@gmail.com)
