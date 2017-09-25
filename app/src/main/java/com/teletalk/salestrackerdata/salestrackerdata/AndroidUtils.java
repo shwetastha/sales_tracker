@@ -10,11 +10,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-
-import com.mediatek.telephony.SmsManagerEx;
-import com.mediatek.telephony.TelephonyManagerEx;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -25,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 public class AndroidUtils {
     protected static String TOGGLE_STATUS_FILE = "toggle";
@@ -39,7 +39,7 @@ public class AndroidUtils {
     protected static String TIMER_TO_SUBTRACT = "timerToSub";
     protected static String TIMER_STARTED_ON = "timerStartedOn";
 
-    protected static String TIMER = "60";//in minutes
+    protected static String TIMER = "1";//in minutes
 
     protected static void create_file(Context context) {
         try {
@@ -203,7 +203,7 @@ public class AndroidUtils {
 
     protected static String getImei(Context context) {
         try {
-            TelephonyManagerEx tm = new TelephonyManagerEx(context);
+            TelephonyManager tm = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
             return tm.getDeviceId(0);
         } catch (NoClassDefFoundError e) {
             try{
@@ -219,76 +219,83 @@ public class AndroidUtils {
     }
 
     protected static String getOperator(Context c) {
-        try {
-            TelephonyManagerEx tm = new TelephonyManagerEx(c);
-            if (tm.getSimState(0) == TelephonyManager.SIM_STATE_READY)
-                return tm.getSimOperatorName(0);
-
-            if (tm.getSimState(1) == TelephonyManager.SIM_STATE_READY)
-                return tm.getSimOperatorName(1);
-            return "";
-        } catch (NoClassDefFoundError e) {
+//        try {
+//            TelephonyManager tm = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
+//            if (tm.getPhoneCount()==2){
+//
+//            }
+//
+//                    if (tm.getSimState(0) == TelephonyManager.SIM_STATE_READY)
+//                        return tm.getSimOperatorName(0);
+//
+//                    if (tm.getSimState(1) == TelephonyManager.SIM_STATE_READY)
+//                        return tm.getSimOperatorName(1);
+//
+//
+//
+//            return "";
+//        } catch (NoClassDefFoundError e) {
             TelephonyManager tm = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
             if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
                 return tm.getSimOperatorName();
 
             return "";
-        }
+//        }
 
     }
 
     protected static boolean simExists(Context c) {
-        try {
-            TelephonyManagerEx tm = new TelephonyManagerEx(c);
-            if (tm.getSimState(0) == TelephonyManager.SIM_STATE_READY
-                    || tm.getSimState(1) == TelephonyManager.SIM_STATE_READY)
-                return true;
-            else
-                return false;
-        } catch (NoClassDefFoundError e) {
+//        try {
+//            TelephonyManager tm = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
+//            if (tm.getSimState(0) == TelephonyManager.SIM_STATE_READY
+//                    || tm.getSimState(1) == TelephonyManager.SIM_STATE_READY)
+//                return true;
+//            else
+//                return false;
+//        } catch (NoClassDefFoundError e) {
             TelephonyManager tm = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
             if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
                 return true;
             else
                 return false;
-        }
+//        }
 
     }
 
     protected static String getCountryIso(Context c) {
-        try {
-            TelephonyManagerEx tm = new TelephonyManagerEx(c);
-            if (tm.getSimState(0) == TelephonyManager.SIM_STATE_READY)
-                return tm.getSimCountryIso(0);
-            else if (tm.getSimState(1) == TelephonyManager.SIM_STATE_READY)
-                return tm.getSimCountryIso(1);
-            else
-                return "";
-        } catch (NoClassDefFoundError e) {
+//        try {
+//            TelephonyManager tm = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
+//            if (tm.getSimState(0) == TelephonyManager.SIM_STATE_READY)
+//                return tm.getSimCountryIso(0);
+//            else if (tm.getSimState(1) == TelephonyManager.SIM_STATE_READY)
+//                return tm.getSimCountryIso(1);
+//            else
+//                return "";
+//        } catch (NoClassDefFoundError e) {
             TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
             if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
                 return tm.getSimCountryIso();
             else
                 return "";
-        }
+//        }
     }
 
     protected static boolean isSimConnected(Context c) {
-        try {
-            TelephonyManagerEx tm = new TelephonyManagerEx(c);
-            if (!tm.getSimOperator(0).equalsIgnoreCase("") || !(tm.getSimOperator(0) == null))
-                return true;
-            else if (!tm.getSimOperator(1).equalsIgnoreCase("") || !(tm.getSimOperator(1) == null))
-                return true;
-            else
-                return false;
-        } catch (NoClassDefFoundError noClassDefFoundError) {
+//        try {
+//            TelephonyManager tm = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
+//            if (!tm.getSimOperator(0).equalsIgnoreCase("") || !(tm.getSimOperator(0) == null))
+//                return true;
+//            else if (!tm.getSimOperator(1).equalsIgnoreCase("") || !(tm.getSimOperator(1) == null))
+//                return true;
+//            else
+//                return false;
+//        } catch (NoClassDefFoundError noClassDefFoundError) {
             TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
             if (!tm.getSimOperator().equalsIgnoreCase("") || !(tm.getSimOperator() == null))
                 return true;
             else
                 return false;
-        }
+//        }
     }
 
 
