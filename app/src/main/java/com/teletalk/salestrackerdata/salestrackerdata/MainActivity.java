@@ -37,12 +37,12 @@ public class MainActivity extends Activity {
         String msgSentStatus = AndroidUtils.getfileContent(getApplicationContext(), AndroidUtils.MSG_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
         String toggleStatus = AndroidUtils.getfileContent(getApplicationContext(), AndroidUtils.TOGGLE_STATUS_FILE, AndroidUtils.TOGGLE_STATUS_ENABLED);
 
-        int PERMISSION_ALL = 1;
-        String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-        if(!hasPermissions(this, PERMISSIONS)){
-            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-        }
+//        int PERMISSION_ALL = 1;
+//        String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+//
+//        if(!hasPermissions(this, PERMISSIONS)){
+//            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+//        }
         tb1 = (ToggleButton) findViewById(R.id.tg1);
         timer = (EditText) findViewById(R.id.timer);
 

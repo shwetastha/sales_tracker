@@ -39,7 +39,7 @@ public class AndroidUtils {
     protected static String TIMER_TO_SUBTRACT = "timerToSub";
     protected static String TIMER_STARTED_ON = "timerStartedOn";
 
-    protected static String TIMER = "1";//in minutes
+    protected static String TIMER = "60";//in minutes
 
     protected static void create_file(Context context) {
         try {
