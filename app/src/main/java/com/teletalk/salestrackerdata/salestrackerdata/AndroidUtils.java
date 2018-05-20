@@ -5,13 +5,9 @@ package com.teletalk.salestrackerdata.salestrackerdata;
  */
 
 import android.content.Context;
-import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
-import android.telephony.SubscriptionInfo;
-import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -24,40 +20,33 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.List;
 
 public class AndroidUtils {
+    protected static final String TAG = "SalesTrackrAndroidUtils";
     protected static String TOGGLE_STATUS_FILE = "toggle";
     protected static String TOGGLE_STATUS_ENABLED = "Enabled";
     protected static String TOGGLE_STATUS_DISABLED = "Disabled";
-
     protected static String TIMER_STATUS_FILE = "timerComplete";
     protected static String MSG_STATUS_FILE = "test";
     protected static String MSG_STATUS_N = "n";
     protected static String MSG_STATUS_Y = "y";
-
     protected static String TIMER_TO_SUBTRACT = "timerToSub";
     protected static String TIMER_STARTED_ON = "timerStartedOn";
-
     protected static String TIMER = "60";//in minutes
+    protected static String LONGITUDE = "N/A", LATITUDE = "N/A";
 
     protected static void create_file(Context context) {
         try {
-//            Toast.makeText(context, "CreateFile", Toast.LENGTH_LONG).show();
-            Log.w("SalesTrackerData:", "AndroidUtils: CreateFile");
+            Log.w(TAG, "AndroidUtils: CreateFile");
 
             FileOutputStream f = context.openFileOutput("test.txt", Context.MODE_PRIVATE);
             f.close();
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-//            Toast.makeText(context, "FileNotFound", Toast.LENGTH_LONG).show();
-            Log.w("SalesTrackerData:", "AndroidUtils: FilenotFound");
+            Log.w(TAG, "AndroidUtils: FilenotFound");
 
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-//            Toast.makeText(context, "IOException", Toast.LENGTH_LONG).show();
-            Log.w("SalesTrackerData:", "AndroidUtils: IOException");
+            Log.w(TAG, "AndroidUtils: IOException");
 
             e.printStackTrace();
         }
@@ -75,14 +64,14 @@ public class AndroidUtils {
             }
             //string temp contains all the data of the file.
             fin.close();
-            Log.w("SalesTracker:AndroidUtils", "Get File " + filename + ".txt value " + temp);
+            Log.w(TAG, "Get File " + filename + ".txt value " + temp);
             return temp;
 
         } catch (Exception e) {
             try {
                 FileOutputStream f = context.openFileOutput(filename + ".txt", Context.MODE_PRIVATE);
                 f.write(fileContent.getBytes());
-                Log.w("SalesTracker:AndroidUtils", "Get File File created " + filename + ".txt value " + temp);
+                Log.w(TAG, "Get File File created " + filename + ".txt value " + temp);
 
                 f.close();
 //                Toast.makeText(context, "File is created for the first time", Toast.LENGTH_LONG).show();
@@ -102,11 +91,11 @@ public class AndroidUtils {
         FileOutputStream file = context.openFileOutput(key + ".txt", Context.MODE_PRIVATE);
         try {
             file.write(value.getBytes());
-            Log.w("SalesTracker:AndroidUtils", "Write To File " + key + ".txt value " + value);
+            Log.w(TAG, "Write To File " + key + ".txt value " + value);
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.w("SalesTracker:AndroidUtils", "Excpetion occured. Write To File " + key + ".txt value " + value + ". Exception= " + e.toString());
+            Log.w(TAG, "Excpetion occured. Write To File " + key + ".txt value " + value + ". Exception= " + e.toString());
 
         } finally {
             file.flush();
@@ -114,7 +103,7 @@ public class AndroidUtils {
         }
     }
 
-    protected static String getSpectrumImeiNo(){
+    protected static String getSpectrumImeiNo() {
         File imei1 = new File("/sdcard/.IMEI1.txt");
         File imei2 = new File("/sdcard/.IMEI2.txt");
 
@@ -142,7 +131,7 @@ public class AndroidUtils {
 
 
         Process p;
-        try{
+        try {
             Process su = Runtime.getRuntime().exec("su");
             DataOutputStream outputStream = new DataOutputStream(su.getOutputStream());
             outputStream.writeBytes("dumpsys iphonesubinfo0 | grep 'Device ID' > /sdcard/.IMEI1.txt\n");
@@ -151,7 +140,7 @@ public class AndroidUtils {
             outputStream.writeBytes("exit\n");
             outputStream.flush();
             su.waitFor();
-        }catch(IOException e){
+        } catch (IOException e) {
             try {
                 throw new Exception(e);
             } catch (Exception e1) {
@@ -159,7 +148,7 @@ public class AndroidUtils {
                 return "Exception";
 
             }
-        }catch(InterruptedException e){
+        } catch (InterruptedException e) {
             try {
                 throw new Exception(e);
             } catch (Exception e1) {
@@ -206,12 +195,12 @@ public class AndroidUtils {
             TelephonyManager tm = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
             return tm.getDeviceId(0);
         } catch (NoClassDefFoundError e) {
-            try{
+            try {
                 if (getSpectrumImeiNo().equalsIgnoreCase("Exception"))
                     throw new Exception(e);
                 else
-                    return getSpectrumImeiNo() ;
-            }catch (Exception e1){
+                    return getSpectrumImeiNo();
+            } catch (Exception e1) {
                 TelephonyManager tm = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
                 return tm.getDeviceId();
             }
@@ -235,11 +224,11 @@ public class AndroidUtils {
 //
 //            return "";
 //        } catch (NoClassDefFoundError e) {
-            TelephonyManager tm = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
-            if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
-                return tm.getSimOperatorName();
+        TelephonyManager tm = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
+        if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
+            return tm.getSimOperatorName();
 
-            return "";
+        return "";
 //        }
 
     }
@@ -253,11 +242,11 @@ public class AndroidUtils {
 //            else
 //                return false;
 //        } catch (NoClassDefFoundError e) {
-            TelephonyManager tm = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
-            if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
-                return true;
-            else
-                return false;
+        TelephonyManager tm = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
+        if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
+            return true;
+        else
+            return false;
 //        }
 
     }
@@ -272,12 +261,11 @@ public class AndroidUtils {
 //            else
 //                return "";
 //        } catch (NoClassDefFoundError e) {
-            TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
-            if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
-                return tm.getSimCountryIso();
-            else
-                return "";
-//        }
+        TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+        if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
+            return tm.getSimCountryIso();
+        else
+            return "";
     }
 
     protected static boolean isSimConnected(Context c) {
@@ -290,12 +278,11 @@ public class AndroidUtils {
 //            else
 //                return false;
 //        } catch (NoClassDefFoundError noClassDefFoundError) {
-            TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
-            if (!tm.getSimOperator().equalsIgnoreCase("") || !(tm.getSimOperator() == null))
-                return true;
-            else
-                return false;
-//        }
+        TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+        if (!tm.getSimOperator().equalsIgnoreCase("") || !(tm.getSimOperator() == null))
+            return true;
+        else
+            return false;
     }
 
 
@@ -314,10 +301,8 @@ public class AndroidUtils {
             fTest.close();
             fToggle.close();
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -334,17 +319,15 @@ public class AndroidUtils {
     }
 
     protected static String getTimer(Context c) {
-        //            Toast.makeText(c, "Timer="+obj.getString("timer"),Toast.LENGTH_LONG).show();
         String timerString = getfileContent(c, "timer", TIMER);
-        Log.w("SalesTrackerSMS", "Timer=" + TIMER);
+        Log.w(TAG, "Timer=" + TIMER);
 
         int timerInt = Integer.parseInt(timerString) * 1000 * 60;
-        Log.w("SalesTrackerSMS", "Timer=" + String.valueOf(timerInt));
+        Log.w(TAG, "Timer=" + String.valueOf(timerInt));
         return String.valueOf(timerInt);
     }
 
     protected static String getTimerHome(Context c) {
-        //            Toast.makeText(c, "Timer="+obj.getString("timer"),Toast.LENGTH_LONG).show();
         return getfileContent(c, "timer", TIMER);
     }
 
@@ -353,13 +336,13 @@ public class AndroidUtils {
             FileInputStream fin = context.openFileInput(key + ".txt");
             fin.close();
 
-            Log.w("SalesTracker:AndroidUtils", "Already Exists!!Set To File " + key + ".txt with value " + value);
+            Log.w(TAG, "Already Exists!!Set To File " + key + ".txt with value " + value);
         } catch (IOException e) {
             try {
                 FileOutputStream f = context.openFileOutput(key + ".txt", Context.MODE_PRIVATE);
                 f.write(value.getBytes());
                 f.close();
-                Log.w("SalesTracker:AndroidUtils", "Created and Set To File " + key + ".txt with value " + value);
+                Log.w(TAG, "Created and Set To File " + key + ".txt with value " + value);
             } catch (FileNotFoundException e1) {
                 e1.printStackTrace();
             } catch (IOException e1) {
@@ -379,14 +362,51 @@ public class AndroidUtils {
             }
             //string temp contains all the data of the file.
             fin.close();
-            Log.w("SalesTracker:AndroidUtils", "Get File: " + filename + ".txt value " + temp);
+            Log.w(TAG, "Get File: " + filename + ".txt value " + temp);
             return temp;
 
         } catch (Exception e) {
-            Log.w("SalesTracker:AndroidUtils", "Get File : " + filename + ".txt value " + temp + ". Exception " + e.toString());
+            Log.w(TAG, "Get File : " + filename + ".txt value " + temp + ". Exception " + e.toString());
             return temp;
         }
     }
 
+    protected static void getCurrentLocation(Context context) {
 
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager != null) {
+
+            Location loc = locationManager
+                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (locationGPS != null) {
+                LATITUDE = String.valueOf(locationGPS.getLatitude());
+                LONGITUDE = String.valueOf(locationGPS.getLongitude());
+            } else if (loc != null) {
+                LATITUDE = String.valueOf(loc.getLatitude());
+                LONGITUDE = String.valueOf(loc.getLongitude());
+            }
+        }
+        Log.w("Salestracker", "LATITUDE=" + LATITUDE);
+        Log.w("Salestracker", "Location1=" + LONGITUDE);
+    }
+
+    protected static String getLATITUDE(Context context) {
+        getCurrentLocation(context);
+        return LATITUDE;
+    }
+
+    protected static String getLONGITUDE(Context context) {
+        getCurrentLocation(context);
+        return LONGITUDE;
+    }
+
+    public static void setLONGITUDE(String LONGITUDE) {
+        AndroidUtils.LONGITUDE = LONGITUDE;
+    }
+
+    public static void setLATITUDE(String LATITUDE) {
+        AndroidUtils.LATITUDE = LATITUDE;
+    }
 }
