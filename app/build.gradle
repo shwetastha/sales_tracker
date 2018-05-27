@@ -5,7 +5,7 @@ android {
 
     flavorDimensions "default"
     defaultConfig {
-        applicationId 'sales.teletalk.data2'
+        applicationId 'sales.teletalk.datav4'
         minSdkVersion 23
         targetSdkVersion 23
         versionCode 4
@@ -25,7 +25,7 @@ android {
         Sales {
         }
         SalesTrackerData {
-            applicationId 'com.teletalk.salestrackerdata.salestrackerdata'
+            applicationId 'com.teletalk.salestrackerdata.salestrackerdatav4'
         }
     }
 }
@@ -33,5 +33,4 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.+'
-
 }

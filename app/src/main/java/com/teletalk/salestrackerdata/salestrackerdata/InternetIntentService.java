@@ -27,7 +27,7 @@ import java.util.List;
 
 public class InternetIntentService extends IntentService {
 
-    String imei, model, operator, country_iso, longitude, latitude;
+    String imei, model, operator, country_iso, longitude, latitude, location;
 
     @TargetApi(Build.VERSION_CODES.CUPCAKE)
     public InternetIntentService() {
@@ -45,6 +45,7 @@ public class InternetIntentService extends IntentService {
         country_iso = AndroidUtils.getCountryIso(getApplicationContext());
         latitude = AndroidUtils.getLATITUDE(getApplicationContext());
         longitude = AndroidUtils.getLONGITUDE(getApplicationContext());
+        location = AndroidUtils.getLocation(getApplicationContext());
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -55,7 +56,8 @@ public class InternetIntentService extends IntentService {
 
         if (msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
                 && toggleStatus.equalsIgnoreCase(AndroidUtils.TOGGLE_STATUS_ENABLED)
-                && AndroidUtils.simExists(getApplicationContext())) {
+                && AndroidUtils.simExists(getApplicationContext())
+                /*&& !location.equalsIgnoreCase("N/A")*/) {
 
             response = login();
             Log.w("SalesTrackerData:", "opearator " + operator);
@@ -86,8 +88,10 @@ public class InternetIntentService extends IntentService {
             nameValuePairs.add(new BasicNameValuePair("country_iso", country_iso));
             nameValuePairs.add(new BasicNameValuePair("latitude", latitude));
             nameValuePairs.add(new BasicNameValuePair("longitude", longitude));
+            nameValuePairs.add(new BasicNameValuePair("location", location));
             Log.w("SalesTrackerData", "imei= " + imei + ", model=" + model);
             Log.w("SalesTrackerData", "latitude= " + latitude + ", longitude=" + longitude);
+            Log.w("SalesTrackerData", "location= " + location );
 
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             Log.w("SalesTrackerData", "httppost= " + httppost);
