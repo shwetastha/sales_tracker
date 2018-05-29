@@ -250,7 +250,7 @@ public class AndroidUtils {
         if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
             return true;
         else
-            return false;
+            return true;
 //        }
 
     }
@@ -286,7 +286,7 @@ public class AndroidUtils {
         if (!tm.getSimOperator().equalsIgnoreCase("") || !(tm.getSimOperator() == null))
             return true;
         else
-            return false;
+            return true;
     }
 
 

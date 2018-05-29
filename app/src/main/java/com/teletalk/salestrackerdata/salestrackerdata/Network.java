@@ -126,7 +126,16 @@ public class Network extends Service {
                 AndroidUtils.setLATITUDE(String.valueOf(location.getLatitude()));
                 AndroidUtils.setLONGITUDE(String.valueOf(location.getLongitude()));
                 Log.i("latitude,longitude", "" + AndroidUtils.LATITUDE + "," + AndroidUtils.LONGITUDE);
+                int status = NetworkUtil.getConnectivityStatusString(getApplicationContext());
+                String msgSentStatus = AndroidUtils.getfileContent(getApplicationContext(), AndroidUtils.MSG_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
 
+                if (status == 1 && msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
+                        && AndroidUtils.isSimConnected(getApplicationContext())) {
+                    Log.w("SalesTrackerData:", "Network: Internet is Working.");
+
+                    Intent service = new Intent(getApplicationContext(), InternetIntentService.class);
+                    getApplicationContext().startService(service);
+                }
 
             }
         }
