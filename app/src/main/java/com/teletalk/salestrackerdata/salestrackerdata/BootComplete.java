@@ -22,8 +22,12 @@ import java.util.Calendar;
 
 public class BootComplete extends BroadcastReceiver {
 
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        BootCompletedJobService.enqueueWork(context, new Intent());
         // TODO Auto-generated method stub
 //        Toast.makeText(context, "Boot Complete.", Toast.LENGTH_LONG).show();
 
@@ -54,7 +58,7 @@ public class BootComplete extends BroadcastReceiver {
 
             Log.w("SalesTrackerData:", "BootComplete.Timer=" + TIMER);
         }else{
-            Log.w("SalesTracker:Boot_Completion_Receiver", "BootComplete msgSentStatus=>" + msgSentStatus + "|toggleStatus=>" + toggleStatus);
+            Log.w("SalesTraBootCompletion", "BootComplete msgSentStatus=>" + msgSentStatus + "|toggleStatus=>" + toggleStatus);
         }
 //    }else{
 //            Intent i = new Intent(context, MainActivity.class);

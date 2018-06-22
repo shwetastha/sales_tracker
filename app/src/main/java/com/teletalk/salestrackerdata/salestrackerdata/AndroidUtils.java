@@ -4,12 +4,15 @@ package com.teletalk.salestrackerdata.salestrackerdata;
  * Created by ShwePC on 5/20/2015.
  */
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -37,7 +40,7 @@ public class AndroidUtils {
     protected static String TIMER_TO_SUBTRACT = "timerToSub";
     protected static String TIMER_STARTED_ON = "timerStartedOn";
     protected static String TIMER = "60";//in minutes
-    protected static String LONGITUDE = "N/A", LATITUDE = "N/A", LOCATION="N/A";
+    protected static String LONGITUDE = "N/A", LATITUDE = "N/A", LOCATION = "N/A";
 
     protected static void create_file(Context context) {
         try {
@@ -197,6 +200,16 @@ public class AndroidUtils {
     protected static String getImei(Context context) {
         try {
             TelephonyManager tm = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return "No Permission";
+            }
             return tm.getDeviceId(0);
         } catch (NoClassDefFoundError e) {
             try {
@@ -250,7 +263,7 @@ public class AndroidUtils {
         if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
             return true;
         else
-            return true;
+            return false;
 //        }
 
     }
@@ -286,7 +299,7 @@ public class AndroidUtils {
         if (!tm.getSimOperator().equalsIgnoreCase("") || !(tm.getSimOperator() == null))
             return true;
         else
-            return true;
+            return false;
     }
 
 
@@ -375,10 +388,20 @@ public class AndroidUtils {
         }
     }
 
-    protected static void getCurrentLocation(Context context)  {
+    protected static void getCurrentLocation(Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         if (locationManager != null) {
 
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             Location loc = locationManager
                     .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
