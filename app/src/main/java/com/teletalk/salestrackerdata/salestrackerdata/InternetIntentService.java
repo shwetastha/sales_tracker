@@ -61,7 +61,8 @@ public class InternetIntentService extends IntentService {
         if (msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
                 && toggleStatus.equalsIgnoreCase(AndroidUtils.TOGGLE_STATUS_ENABLED)
                 && AndroidUtils.simExists(getApplicationContext())
-                && !location.equalsIgnoreCase("N/A")) {
+                && AndroidUtils.isLocationServicesEnabled(location, getApplicationContext())
+                ) {
 
             response = login();
             Log.w("SalesTrackerData:", "opearator " + operator);

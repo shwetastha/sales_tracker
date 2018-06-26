@@ -468,4 +468,22 @@ public class AndroidUtils {
     public static void setLATITUDE(String LATITUDE) {
         AndroidUtils.LATITUDE = LATITUDE;
     }
+
+    public static boolean isLocationServicesEnabled( String location, Context context){
+        LocationManager lm = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+
+        if (lm!=null) {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        }
+
+        if (gps_enabled && location.contains("N/A"))
+            return false;
+        else if (!gps_enabled)
+            return true;
+        else if (gps_enabled && !location.contains("N/A"))
+            return true;
+        else
+            return false;
+    }
 }
