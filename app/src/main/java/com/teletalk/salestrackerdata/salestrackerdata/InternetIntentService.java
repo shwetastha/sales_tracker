@@ -81,8 +81,8 @@ public class InternetIntentService extends IntentService {
 
         // Create a new HttpClient and Post Header
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://202.166.205.39/sales_tracker_test/insert.php");
-//        HttpPost httppost = new HttpPost("http://192.168.37.1/Sales_Tracker/insert.php");
+        //HttpPost httppost = new HttpPost("http://202.166.205.39/sales_tracker_test/insert.php");
+        HttpPost httppost = new HttpPost("http://192.168.37.1/Sales_Tracker/insert.php");
 
         try {
             // Add your data
