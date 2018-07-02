@@ -8,4 +8,5 @@ pipelines:
        - echo "Start default step"
        - ./build.sh
        - echo "Amazing"
+       - chmod +x deploy-hockey-dev.sh
        - ./deploy-hockey-dev.sh
