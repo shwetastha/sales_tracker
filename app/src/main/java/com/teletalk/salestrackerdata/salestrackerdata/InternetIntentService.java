@@ -57,7 +57,7 @@ public class InternetIntentService extends IntentService {
         Log.w("SalesTrackerData:", "toggleStatus == Enabled ==  " + toggleStatus);
         Log.w("SalesTrackerData:", "location != N/A ==  " + location);
 //        Toast.makeText(getApplicationContext(), "address= "+location, Toast.LENGTH_LONG).show();
-
+     Log.w("SalesTrackerData:", "LocationTest="+AndroidUtils.isLocationServicesEnabled(location, getApplicationContext()));
         if (msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
                 && toggleStatus.equalsIgnoreCase(AndroidUtils.TOGGLE_STATUS_ENABLED)
                 && AndroidUtils.simExists(getApplicationContext())
@@ -81,8 +81,9 @@ public class InternetIntentService extends IntentService {
 
         // Create a new HttpClient and Post Header
         HttpClient httpclient = new DefaultHttpClient();
-        //HttpPost httppost = new HttpPost("http://202.166.205.39/sales_tracker_test/insert.php");
-        HttpPost httppost = new HttpPost("http://192.168.37.1/Sales_Tracker/insert.php");
+        HttpPost httppost = new HttpPost("http://202.166.205.39/sales_tracker_test/insert.php");
+//        HttpPost httppost = new HttpPost("http://202.166.205.39/sales_tracker/insert.php");
+//        HttpPost httppost = new HttpPost("http://192.168.37.1/Sales_Tracker/insert.php");
 
         try {
             // Add your data
@@ -104,6 +105,8 @@ public class InternetIntentService extends IntentService {
             // Execute HTTP Post Request
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             String response = httpclient.execute(httppost, responseHandler);
+            Log.w("SalesTrackerData", "response= " + response);
+
             return response;
         } catch (Exception e) {
             Log.w("SalesTrackerData", "ExceptionOccured= " + e.toString());
