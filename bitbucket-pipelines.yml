@@ -1,0 +1,10 @@
+# — — — # You can specify a custom docker image from Docker Hub as your build environment. 
+image: uber/android-build-environment:latest 
+pipelines: 
+  default:
+    - step:
+       script: # Modify the commands below to build your repository. 
+       - unset ANDROID_NDK_HOME # To unset the NDK env if not needed
+       - echo "Start default step"
+       - ./build.sh
+       - echo "Amazing"
