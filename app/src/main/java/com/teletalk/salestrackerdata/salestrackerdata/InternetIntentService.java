@@ -63,7 +63,7 @@ public class InternetIntentService extends IntentService {
                 && AndroidUtils.simExists(getApplicationContext())
                 && AndroidUtils.isLocationServicesEnabled(location, getApplicationContext())
                 ) {
-
+            Toast.makeText(getApplicationContext(), "Sending To Server = "+location, Toast.LENGTH_LONG).show();
             response = login();
             Log.w("SalesTrackerData:", "opearator " + operator);
 
