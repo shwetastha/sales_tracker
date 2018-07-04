@@ -26,7 +26,7 @@ public class Alarm_Receiver extends BroadcastReceiver {
         AndroidUtils.getCurrentLocation(context);
 
 //        if (timerComplete.equalsIgnoreCase("n")) {
-//            Toast.makeText(context, "Timer Finished", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Timer Finished", Toast.LENGTH_LONG).show();
         Intent service = new Intent(context, Network.class);
         context.startService(service);
 //        }
