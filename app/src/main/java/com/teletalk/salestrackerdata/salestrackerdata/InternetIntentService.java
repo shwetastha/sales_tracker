@@ -50,13 +50,13 @@ public class InternetIntentService extends IntentService {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        String response;
+        String response = "N/A";
         String msgSentStatus = AndroidUtils.getfileContent(getApplicationContext(), AndroidUtils.MSG_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
         String toggleStatus = AndroidUtils.getfileContent(getApplicationContext(), AndroidUtils.TOGGLE_STATUS_FILE, AndroidUtils.TOGGLE_STATUS_ENABLED);
         Log.w("SalesTrackerData:", "msgSentStatus == N ==" + msgSentStatus);
         Log.w("SalesTrackerData:", "toggleStatus == Enabled ==  " + toggleStatus);
         Log.w("SalesTrackerData:", "location != N/A ==  " + location);
-//        Toast.makeText(getApplicationContext(), "address= "+location, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "address= "+location, Toast.LENGTH_LONG).show();
      Log.w("SalesTrackerData:", "LocationTest="+AndroidUtils.isLocationServicesEnabled(location, getApplicationContext()));
         if (msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
                 && toggleStatus.equalsIgnoreCase(AndroidUtils.TOGGLE_STATUS_ENABLED)
@@ -75,6 +75,7 @@ public class InternetIntentService extends IntentService {
             }
             Log.w("SalesTrackerData", "Response= " + response);
         }
+        Toast.makeText(getApplicationContext(), "response= "+response, Toast.LENGTH_LONG).show();
     }
 
     public String login() {
