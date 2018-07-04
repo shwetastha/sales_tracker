@@ -38,7 +38,7 @@ public class Network extends Service {
             if (status == 1 && msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
                     && AndroidUtils.isSimConnected(context)) {
                 Log.w("SalesTrackerData:", "Network: Internet is Working.");
-
+                Toast.makeText(context, "Network: Internet is Working.", Toast.LENGTH_LONG).show();
                 Intent service = new Intent(context, InternetIntentService.class);
                 context.startService(service);
             }
