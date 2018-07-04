@@ -29,7 +29,7 @@ public class BootComplete extends BroadcastReceiver {
 
         BootCompletedJobService.enqueueWork(context, new Intent());
         // TODO Auto-generated method stub
-//        Toast.makeText(context, "Boot Complete.", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Boot Complete.", Toast.LENGTH_LONG).show();
 
 //        Toast.makeText(context,"PowerOn",Toast.LENGTH_SHORT).show();
         Log.w("SalesTrackerData:", "BootComplete.");
