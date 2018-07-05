@@ -16,6 +16,7 @@ import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 //import android.widget.Toast;
 
 import java.util.Calendar;
@@ -27,12 +28,12 @@ public class BootComplete extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        BootCompletedJobService.enqueueWork(context, new Intent());
+//        BootCompletedJobService.enqueueWork(context, new Intent());
         // TODO Auto-generated method stub
-        Toast.makeText(context, "Boot Complete.", Toast.LENGTH_LONG).show();
+//        Toast.makeText(context, "Boot Complete.", Toast.LENGTH_LONG).show();
 
 //        Toast.makeText(context,"PowerOn",Toast.LENGTH_SHORT).show();
-        Log.w("SalesTrackerData:", "BootComplete.");
+        Log.w("SalesTrackerData:", "BootComplete.V5");
         String timerComplete = AndroidUtils.getfileContent(context, AndroidUtils.TIMER_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
         String msgSentStatus = AndroidUtils.getfileContent(context, AndroidUtils.MSG_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
         String toggleStatus = AndroidUtils.getfileContent(context, AndroidUtils.TOGGLE_STATUS_FILE, AndroidUtils.TOGGLE_STATUS_ENABLED);

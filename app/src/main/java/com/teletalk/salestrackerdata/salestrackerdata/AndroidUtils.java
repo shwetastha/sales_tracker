@@ -478,7 +478,7 @@ public class AndroidUtils {
         }
 
         if (gps_enabled && location.contains("N/A"))
-            return false;
+            return true;
         else
             return true;
     }

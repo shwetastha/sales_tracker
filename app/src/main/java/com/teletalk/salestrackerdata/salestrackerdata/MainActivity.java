@@ -88,7 +88,7 @@ public class MainActivity extends Activity {
                 Intent service = new Intent(getApplicationContext(), Network.class);
                 getApplicationContext().startService(service);
                 Log.w("Salestracker","IMEI="+AndroidUtils.getImei(getApplication()));
-                Toast.makeText(getApplicationContext(), "address= "+AndroidUtils.getLocation(getApplication()), Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), "address= "+AndroidUtils.getLocation(getApplication()), Toast.LENGTH_LONG).show();
 
             }
         });

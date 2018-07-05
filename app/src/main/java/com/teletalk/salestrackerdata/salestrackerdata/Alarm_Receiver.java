@@ -19,14 +19,17 @@ public class Alarm_Receiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // TODO Auto-generated method stub
+
+        BootCompletedJobService.enqueueWork(context, new Intent());
+
 //  Toast.makeText(context, "Started after some time", Toast.LENGTH_LONG).show();
         Log.w("SalesTrackerData:", "AlarmReciever");
         String timerComplete = AndroidUtils.getfileContent(context, AndroidUtils.TIMER_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
         AndroidUtils.getCurrentLocation(context);
 
 //        if (timerComplete.equalsIgnoreCase("n")) {
-            Toast.makeText(context, "Timer Finished", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "Timer Finished", Toast.LENGTH_LONG).show();
+
         Intent service = new Intent(context, Network.class);
         context.startService(service);
 //        }
