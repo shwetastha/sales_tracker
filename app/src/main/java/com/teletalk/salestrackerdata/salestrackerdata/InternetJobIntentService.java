@@ -76,7 +76,11 @@ public class InternetJobIntentService extends JobIntentService {
                 AndroidUtils.dataSentTrigger(context);
             } else {
                 Intent service = new Intent(context, Network.class);
-                context.startService(service);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(service);
+                } else {
+                    context.startService(service);
+                }
             }
 //            Toast.makeText(context, "Sent to Server= "+response, Toast.LENGTH_LONG).show();
 

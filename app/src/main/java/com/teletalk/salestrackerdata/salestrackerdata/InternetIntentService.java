@@ -75,7 +75,12 @@ public class InternetIntentService extends IntentService {
                 AndroidUtils.dataSentTrigger(getApplicationContext());
             } else {
                 Intent service = new Intent(getApplicationContext(), Network.class);
-                getApplicationContext().startService(service);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    getApplicationContext().startForegroundService(service);
+                } else {
+                    getApplicationContext().startService(service);
+                }
+
             }
 //            Toast.makeText(getApplicationContext(), "Sent to Server= "+response, Toast.LENGTH_LONG).show();
 

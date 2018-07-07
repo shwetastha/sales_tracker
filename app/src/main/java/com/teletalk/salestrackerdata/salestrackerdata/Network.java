@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -42,7 +43,11 @@ public class Network extends Service {
                 Log.w("SalesTrackerData:", "Network: Internet is Working.");
 //                Toast.makeText(context, "Network: Internet is Working.", Toast.LENGTH_LONG).show();
                 Intent service = new Intent(context, InternetIntentService.class);
-                context.startService(service);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(service);
+                } else {
+                    context.startService(service);
+                }
             }
 
         }
@@ -136,7 +141,11 @@ public class Network extends Service {
                     Log.w("SalesTrackerData:", "Network: Internet is Working.");
 
                     Intent service = new Intent(getApplicationContext(), InternetIntentService.class);
-                    getApplicationContext().startService(service);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        getApplicationContext().startForegroundService(service);
+                    } else {
+                        getApplicationContext().startService(service);
+                    }
                 }
 
             }

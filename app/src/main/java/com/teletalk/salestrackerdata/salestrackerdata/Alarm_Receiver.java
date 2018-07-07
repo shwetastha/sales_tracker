@@ -7,6 +7,7 @@ package com.teletalk.salestrackerdata.salestrackerdata;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 //import android.widget.Toast;
@@ -31,7 +32,11 @@ public class Alarm_Receiver extends BroadcastReceiver {
 //            Toast.makeText(context, "Timer Finished", Toast.LENGTH_LONG).show();
 
         Intent service = new Intent(context, Network.class);
-        context.startService(service);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(service);
+        } else {
+            context.startService(service);
+        }
 //        }
     }
 

@@ -86,7 +86,11 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent service = new Intent(getApplicationContext(), Network.class);
-                getApplicationContext().startService(service);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    getApplicationContext().startForegroundService(service);
+                } else {
+                    getApplicationContext().startService(service);
+                }
                 Log.w("Salestracker","IMEI="+AndroidUtils.getImei(getApplication()));
 //                Toast.makeText(getApplicationContext(), "address= "+AndroidUtils.getLocation(getApplication()), Toast.LENGTH_LONG).show();
 
