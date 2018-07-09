@@ -5,7 +5,7 @@ import android.content.Context;
 
 public class SaleTrackerTestClass {
 
-    public static final boolean TEST = true;
+    public static final boolean TEST = false;
 
     /*
         This method shows toast while debugging the code.

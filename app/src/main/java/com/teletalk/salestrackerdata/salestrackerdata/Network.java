@@ -46,6 +46,7 @@ public class Network extends JobService {
         public void onReceive(Context context, Intent intent) {
             int status = NetworkUtil.getConnectivityStatusString(context);
             String msgSentStatus = AndroidUtils.getfileContent(context, AndroidUtils.MSG_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
+            SaleTrackerTestClass.showMessageInToast(context, "Network: in");
 
             if (status == 1 && msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
                     && AndroidUtils.isSimConnected(context)) {
@@ -59,6 +60,9 @@ public class Network extends JobService {
                 jobInfo = builder.build();
                 jobScheduler = ( JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
                 jobScheduler.schedule(jobInfo);
+
+                unregisterReceiver(receiver);
+
             }
         }
     };
@@ -91,7 +95,7 @@ public class Network extends JobService {
         } catch (IllegalArgumentException ex) {
             Log.d(TAG, "gps provider does not exist " + ex.getMessage());
         }
-
+        jobFinished(jobParameters, false);
         return false;
     }
 
@@ -141,11 +145,7 @@ public class Network extends JobService {
                     Log.w("SalesTrackerData:", "Network: Internet is Working.");
 
                     Intent service = new Intent(getApplicationContext(), InternetIntentService.class);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        getApplicationContext().startForegroundService(service);
-                    } else {
-                        getApplicationContext().startService(service);
-                    }
+                    getApplicationContext().startService(service);
                 }
 
             }

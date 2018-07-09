@@ -2,6 +2,9 @@ package com.teletalk.salestrackerdata.salestrackerdata;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -85,15 +88,25 @@ public class MainActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent service = new Intent(getApplicationContext(), Network.class);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    getApplicationContext().startForegroundService(service);
-                } else {
-                    getApplicationContext().startService(service);
-                }
-                Log.w("Salestracker","IMEI="+AndroidUtils.getImei(getApplication()));
-//                Toast.makeText(getApplicationContext(), "address= "+AndroidUtils.getLocation(getApplication()), Toast.LENGTH_LONG).show();
+                Context context = getApplicationContext();
+                int JOB_NETWORK_ID = 23487;
+                JobScheduler jobScheduler;
+                JobInfo jobInfo;
+                SaleTrackerTestClass.showMessageInToast(context, "Alram recived after the timer was set.");
+                Log.w("SalesTrackerData:", "AlarmReciever");
 
+                String timerComplete = AndroidUtils.getfileContent(context, AndroidUtils.TIMER_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
+                AndroidUtils.getCurrentLocation(context);
+
+                SaleTrackerTestClass.showMessageInToast(context, "Timer Finished");
+
+                ComponentName componentName = new ComponentName(context, Network.class);
+                JobInfo.Builder builder = new JobInfo.Builder(JOB_NETWORK_ID, componentName);
+                builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+
+                jobInfo = builder.build();
+                jobScheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+                jobScheduler.schedule(jobInfo);
             }
         });
 
