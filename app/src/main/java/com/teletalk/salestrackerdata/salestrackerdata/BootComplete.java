@@ -23,61 +23,49 @@ import java.util.Calendar;
 
 public class BootComplete extends BroadcastReceiver {
 
-
-
     @Override
     public void onReceive(Context context, Intent intent) {
-
+        SaleTrackerTestClass.showMessageInToast(context, "Boot Complete.");
+        SaleTrackerTestClass.showMessageInToast(context,"PowerOn");
 //        BootCompletedJobService.enqueueWork(context, new Intent());
-        // TODO Auto-generated method stub
-//        Toast.makeText(context, "Boot Complete.", Toast.LENGTH_LONG).show();
-
-//        Toast.makeText(context,"PowerOn",Toast.LENGTH_SHORT).show();
         Log.w("SalesTrackerData:", "BootComplete.V5");
+
+        //Reading content from file.
         String timerComplete = AndroidUtils.getfileContent(context, AndroidUtils.TIMER_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
         String msgSentStatus = AndroidUtils.getfileContent(context, AndroidUtils.MSG_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
         String toggleStatus = AndroidUtils.getfileContent(context, AndroidUtils.TOGGLE_STATUS_FILE, AndroidUtils.TOGGLE_STATUS_ENABLED);
         Integer TIMER = Integer.parseInt(AndroidUtils.getTimer(context));//60 min
+
+        //Getting current location of user.
         AndroidUtils.getCurrentLocation(context);
-//        String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        // if message is not sent and the toggle button is enabled.
+        if (msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
+                && toggleStatus.equalsIgnoreCase(AndroidUtils.TOGGLE_STATUS_ENABLED)) {
 
-//        if (hasPermissions(context, PERMISSIONS)){
-        if (msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N) && toggleStatus.equalsIgnoreCase(AndroidUtils.TOGGLE_STATUS_ENABLED)) {
-
-            //firt tym ho vane 0 natra jati cha teti return garne.
-            AndroidUtils.getfileContent(context, AndroidUtils.TIMER_TO_SUBTRACT, "0");
+            //If the application is running for the first time, add timer to zero.
+            //AndroidUtils.getfileContent(context, AndroidUtils.TIMER_TO_SUBTRACT, "0");
             String timerToSubtract= AndroidUtils.getfileContent(context, AndroidUtils.TIMER_TO_SUBTRACT, "0");
+
+            //Checking if the timer is completed.
             TIMER = TIMER - Integer.valueOf(timerToSubtract);
-            if (TIMER < 0 ){TIMER=0;}
+
+            if (TIMER < 0 ){
+                TIMER=0;
+            }
+
             AndroidUtils.getfileContent(context, AndroidUtils.TIMER_STARTED_ON, String.valueOf(SystemClock.elapsedRealtime()));
-           Intent i = new Intent(context, Alarm_Receiver.class);
-              AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                PendingIntent pending = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
-//          set the alarm for particular time
+
+            // stating the intent to run after the timer is set.
+            Intent alramReceiverIntent = new Intent(context, Alarm_Receiver.class);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            // pending intent that is used when the time is met.
+            PendingIntent pending = PendingIntent.getBroadcast(context, 0, alramReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            //sets the alarm for particular time such that the pending intent can start running.
             alarmManager.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime()
                     + TIMER, pending);
-
             Log.w("SalesTrackerData:", "BootComplete.Timer=" + TIMER);
         }else{
             Log.w("SalesTraBootCompletion", "BootComplete msgSentStatus=>" + msgSentStatus + "|toggleStatus=>" + toggleStatus);
         }
-//    }else{
-//            Intent i = new Intent(context, MainActivity.class);
-//            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    context.startActivity(i);
-//        }
-
-    }
-
-
-    public static boolean hasPermissions(Context context, String... permissions) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }

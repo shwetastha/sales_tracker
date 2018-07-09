@@ -35,6 +35,7 @@ public class AndroidUtils {
     protected static String TOGGLE_STATUS_DISABLED = "Disabled";
     protected static String TIMER_STATUS_FILE = "timerComplete";
     protected static String MSG_STATUS_FILE = "test";
+    protected static String SHUTDOWN_INFO_FILE = "Shutdown";
     protected static String MSG_STATUS_N = "n";
     protected static String MSG_STATUS_Y = "y";
     protected static String TIMER_TO_SUBTRACT = "timerToSub";
@@ -60,8 +61,12 @@ public class AndroidUtils {
 
     }
 
+    /*
+      This method returns the content of the file if the file is present otherwise creates a new file
+      with the content passed as parameter.
+     */
     protected static String getfileContent(Context context, String filename, String fileContent) {
-
+        //if file is already present return the content.
         String temp = "";
         try {
             FileInputStream fin = context.openFileInput(filename + ".txt");
@@ -69,29 +74,25 @@ public class AndroidUtils {
             while ((c = fin.read()) != -1) {
                 temp = temp + Character.toString((char) c);
             }
-            //string temp contains all the data of the file.
             fin.close();
             Log.w(TAG, "Get File " + filename + ".txt value " + temp);
             return temp;
-
         } catch (Exception e) {
+            // if exception occured, we assume there was no file created and adding the default content.
             try {
                 FileOutputStream f = context.openFileOutput(filename + ".txt", Context.MODE_PRIVATE);
                 f.write(fileContent.getBytes());
-                Log.w(TAG, "Get File File created " + filename + ".txt value " + temp);
-
+                Log.w(TAG, "File created: " + filename + ".txt content: " + fileContent);
                 f.close();
-//                Toast.makeText(context, "File is created for the first time", Toast.LENGTH_LONG).show();
+                SaleTrackerTestClass.showMessageInToast(context, "File created : " + filename + " contest: " + fileContent);
                 return fileContent;
             } catch (FileNotFoundException e1) {
                 e1.printStackTrace();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-
         }
         return temp;
-
     }
 
     protected static void writeToFile(Context context, String key, String value) throws IOException {
@@ -481,5 +482,16 @@ public class AndroidUtils {
             return true;
         else
             return true;
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

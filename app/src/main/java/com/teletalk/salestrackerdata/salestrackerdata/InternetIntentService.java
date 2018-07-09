@@ -6,6 +6,11 @@ package com.teletalk.salestrackerdata.salestrackerdata;
 
 import android.annotation.TargetApi;
 import android.app.IntentService;
+import android.app.job.JobInfo;
+import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.StrictMode;
@@ -26,103 +31,46 @@ import java.util.List;
 
 //import android.widget.Toast;
 
-public class InternetIntentService extends IntentService {
+public class InternetIntentService extends JobService {
 
-    String imei, model, operator, country_iso, longitude, latitude, location;
+    private static final int JOB_NETWORK_ID = 23487;
+    private SaleTrackerJobExecuter saleTrackerJobExecuter;
+    private JobScheduler jobScheduler;
+    private JobInfo jobInfo;
 
-    @TargetApi(Build.VERSION_CODES.CUPCAKE)
-    public InternetIntentService() {
-        super("InternetItentService");
-    }
-
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
-    protected void onHandleIntent(Intent arg0) {
-        InternetJobIntentService.enqueueWork(getApplicationContext(), new Intent());
-        Log.w("SalesTrackerIntent:", "Network: Internet is Working.");
+    public boolean onStartJob(final JobParameters jobParameters) {
+        saleTrackerJobExecuter = new SaleTrackerJobExecuter(getApplicationContext()){
 
-        imei = AndroidUtils.getImei(getApplicationContext());
-        model = AndroidUtils.getModel().replace("Colors", "");
-        operator = AndroidUtils.getOperator(getApplicationContext());
-        country_iso = AndroidUtils.getCountryIso(getApplicationContext());
-        latitude = AndroidUtils.getLATITUDE(getApplicationContext());
-        longitude = AndroidUtils.getLONGITUDE(getApplicationContext());
-        location = AndroidUtils.getLocation(getApplicationContext());
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        String response = "N/A";
-        String msgSentStatus = AndroidUtils.getfileContent(getApplicationContext(), AndroidUtils.MSG_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
-        String toggleStatus = AndroidUtils.getfileContent(getApplicationContext(), AndroidUtils.TOGGLE_STATUS_FILE, AndroidUtils.TOGGLE_STATUS_ENABLED);
-        Log.w("SalesTrackerData:", "msgSentStatus == N ==" + msgSentStatus);
-        Log.w("SalesTrackerData:", "toggleStatus == Enabled ==  " + toggleStatus);
-        Log.w("SalesTrackerData:", "location != N/A ==  " + location);
-//        Toast.makeText(getApplicationContext(), "address= "+location, Toast.LENGTH_LONG).show();
-     Log.w("SalesTrackerData:", "LocationTest="+AndroidUtils.isLocationServicesEnabled(location, getApplicationContext()));
-     Log.w("SalesTrackerData:", "msgSentStatus="+msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N));
-     Log.w("SalesTrackerData:", "toggleStatus="+toggleStatus.equalsIgnoreCase(AndroidUtils.TOGGLE_STATUS_ENABLED));
-     Log.w("SalesTrackerData:", "simExists="+AndroidUtils.simExists(getApplicationContext()));
-        if (msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
-                && toggleStatus.equalsIgnoreCase(AndroidUtils.TOGGLE_STATUS_ENABLED)
-                && AndroidUtils.simExists(getApplicationContext())
-                && AndroidUtils.isLocationServicesEnabled(location, getApplicationContext())
-                ) {
-//            Toast.makeText(getApplicationContext(), "Sending To Server = "+location, Toast.LENGTH_LONG).show();
-            response = login();
-            Log.w("SalesTrackerData:", "opearator " + operator);
-
-            if (response.equalsIgnoreCase("true")) {
-                AndroidUtils.dataSentTrigger(getApplicationContext());
-            } else {
-                Intent service = new Intent(getApplicationContext(), Network.class);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    getApplicationContext().startForegroundService(service);
-                } else {
-                    getApplicationContext().startService(service);
+            @Override
+            protected void onPostExecute(Boolean success) {
+                if(!success){
+                    ComponentName componentName = new ComponentName(getApplicationContext(), Network.class);
+                    JobInfo.Builder builder = new JobInfo.Builder(JOB_NETWORK_ID, componentName);
+                    builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+                    jobInfo = builder.build();
+                    jobScheduler = ( JobScheduler) getApplicationContext().getSystemService(JOB_SCHEDULER_SERVICE);
+                    jobScheduler.schedule(jobInfo);
                 }
-
+                jobFinished(jobParameters, false);
             }
-//            Toast.makeText(getApplicationContext(), "Sent to Server= "+response, Toast.LENGTH_LONG).show();
+        };
 
-            Log.w("SalesTrackerData", "Response= " + response);
-        }
-//        Toast.makeText(getApplicationContext(), "response= "+response, Toast.LENGTH_LONG).show();
+        saleTrackerJobExecuter.execute();
+        //Sincing the task is running on a different thread return true.
+        return true;
     }
 
-    public String login() {
-
-        // Create a new HttpClient and Post Header
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://202.166.205.39/sales_tracker_test/insert.php");
-//        HttpPost httppost = new HttpPost("http://202.166.205.39/sales_tracker/insert.php");
-//        HttpPost httppost = new HttpPost("http://192.168.37.1/Sales_Tracker/insert.php");
-
-        try {
-            // Add your data
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-            nameValuePairs.add(new BasicNameValuePair("imei", imei));
-            nameValuePairs.add(new BasicNameValuePair("model", model));
-            nameValuePairs.add(new BasicNameValuePair("operator", operator));
-            nameValuePairs.add(new BasicNameValuePair("country_iso", country_iso));
-            nameValuePairs.add(new BasicNameValuePair("latitude", latitude));
-            nameValuePairs.add(new BasicNameValuePair("longitude", longitude));
-            nameValuePairs.add(new BasicNameValuePair("location", location));
-            Log.w("SalesTrackerData", "imei= " + imei + ", model=" + model);
-            Log.w("SalesTrackerData", "latitude= " + latitude + ", longitude=" + longitude);
-            Log.w("SalesTrackerData", "location= " + location );
-
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            Log.w("SalesTrackerData", "httppost= " + httppost);
-
-            // Execute HTTP Post Request
-            ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            String response = httpclient.execute(httppost, responseHandler);
-            Log.w("SalesTrackerData", "response= " + response);
-
-            return response;
-        } catch (Exception e) {
-            Log.w("SalesTrackerData", "ExceptionOccured= " + e.toString());
-            return e.toString();
-        }
+    @Override
+    public boolean onStopJob(JobParameters jobParameters) {
+        //If its interrupted.
+        saleTrackerJobExecuter.cancel(true);
+        ComponentName componentName = new ComponentName(getApplicationContext(), Network.class);
+        JobInfo.Builder builder = new JobInfo.Builder(JOB_NETWORK_ID, componentName);
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+        jobInfo = builder.build();
+        jobScheduler = ( JobScheduler) getApplicationContext().getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(jobInfo);
+        return false;
     }
 }

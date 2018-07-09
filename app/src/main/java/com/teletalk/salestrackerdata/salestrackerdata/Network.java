@@ -5,7 +5,12 @@ package com.teletalk.salestrackerdata.salestrackerdata;
  */
 
 import android.app.Service;
+import android.app.job.JobInfo;
+import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -21,58 +26,52 @@ import android.widget.Toast;
 
 import static android.content.ContentValues.TAG;
 
-public class Network extends Service {
+public class Network extends JobService {
 
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
+    private static final int JOB_DATABASE_WRITE_ID = 3478;
+    private JobScheduler jobScheduler;
+    private JobInfo jobInfo;
+
+
     LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
+
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
-//            BootCompletedJobService.enqueueWork(context, new Intent());
             int status = NetworkUtil.getConnectivityStatusString(context);
             String msgSentStatus = AndroidUtils.getfileContent(context, AndroidUtils.MSG_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
 
             if (status == 1 && msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
                     && AndroidUtils.isSimConnected(context)) {
                 Log.w("SalesTrackerData:", "Network: Internet is Working.");
-//                Toast.makeText(context, "Network: Internet is Working.", Toast.LENGTH_LONG).show();
-                Intent service = new Intent(context, InternetIntentService.class);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startForegroundService(service);
-                } else {
-                    context.startService(service);
-                }
-            }
+                SaleTrackerTestClass.showMessageInToast(context, "Network: Internet is Working.");
 
+                // Calling the service class.
+                ComponentName componentName = new ComponentName(context, InternetIntentService.class);
+                JobInfo.Builder builder = new JobInfo.Builder(JOB_DATABASE_WRITE_ID, componentName);
+                builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+                jobInfo = builder.build();
+                jobScheduler = ( JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+                jobScheduler.schedule(jobInfo);
+            }
         }
     };
     private LocationManager mLocationManager = null;
 
     @Override
-    public IBinder onBind(Intent intent) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void onCreate() {
-        // TODO Auto-generated method stub
-        super.onCreate();
+    public boolean onStartJob(JobParameters jobParameters) {
         initializeLocationManager();
-        final IntentFilter rece = new IntentFilter();
-        {
-            rece.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-            rece.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        }
+        final IntentFilter intentFilters = new IntentFilter();
+        intentFilters.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        intentFilters.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 
-
-        registerReceiver(receiver, rece);
+        registerReceiver(receiver, intentFilters);
 
         try {
             mLocationManager.requestLocationUpdates(
@@ -92,12 +91,12 @@ public class Network extends Service {
         } catch (IllegalArgumentException ex) {
             Log.d(TAG, "gps provider does not exist " + ex.getMessage());
         }
+
+        return false;
     }
 
     @Override
-    public void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
+    public boolean onStopJob(JobParameters jobParameters) {
         unregisterReceiver(receiver);
         if (mLocationManager != null) {
             for (int i = 0; i < mLocationListeners.length; i++) {
@@ -108,6 +107,7 @@ public class Network extends Service {
                 }
             }
         }
+        return false;
     }
 
     private void initializeLocationManager() {

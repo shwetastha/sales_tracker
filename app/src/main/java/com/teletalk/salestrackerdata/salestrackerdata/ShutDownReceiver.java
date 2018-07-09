@@ -14,12 +14,12 @@ import java.io.IOException;
 public class ShutDownReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.w("SalesTracker:ShutDownReciever", "Class");
+        Log.w("ST:ShutDownReciever", "Class");
 
         Integer prevTime = Integer.valueOf(AndroidUtils.getfile(context, AndroidUtils.TIMER_STARTED_ON, "0"));
         Integer curTime = Integer.valueOf(String.valueOf(SystemClock.elapsedRealtime()));
         Integer difference = curTime - prevTime;
-        Log.w("SalesTracker:ShutDownReciever", "TimeDiff" + difference.toString());
+        Log.w("ST:ShutDownReciever", "TimeDiff" + difference.toString());
         try {
             if (difference < 0 || prevTime==0) {
                 AndroidUtils.writeToFile(context, AndroidUtils.TIMER_TO_SUBTRACT, "0");
@@ -30,8 +30,7 @@ public class ShutDownReceiver extends BroadcastReceiver {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String toggle = AndroidUtils.getfileContent(context, "binamra", "shutdown");
-
+        String toggle = AndroidUtils.getfileContent(context, AndroidUtils.SHUTDOWN_INFO_FILE, "shutdown");
         //Log.w("TimerDiff", difference.toString());
 
     }
