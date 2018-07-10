@@ -57,7 +57,7 @@ public class SaleTrackerJobExecuter extends AsyncTask<Void, Void, Boolean> {
         if (msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
                 && toggleStatus.equalsIgnoreCase(AndroidUtils.TOGGLE_STATUS_ENABLED)
                 && AndroidUtils.simExists(context)
-                && AndroidUtils.isLocationServicesEnabled(location, context)
+//                && AndroidUtils.isLocationServicesEnabled(location, context)
                 ) {
             response = login();
             Log.w("SalesTrackerData", "Response= " + response);

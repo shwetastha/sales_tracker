@@ -389,34 +389,59 @@ public class AndroidUtils {
         }
     }
 
+    public static void setLONGITUDE(String LONGITUDE) {
+        AndroidUtils.LONGITUDE = LONGITUDE;
+    }
+
+    public static void setLATITUDE(String LATITUDE) {
+        AndroidUtils.LATITUDE = LATITUDE;
+    }
+
+    public static void setLOCATION(String LOCATION) {
+        AndroidUtils.LOCATION = LOCATION;
+    }
+
+    public static String getLONGITUDE() {
+
+        return LONGITUDE;
+    }
+
+    public static String getLATITUDE() {
+        return LATITUDE;
+    }
+
+    public static String getLOCATION() {
+        return LOCATION;
+    }
+
     protected static void getCurrentLocation(Context context) {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager != null) {
-
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            Location loc = locationManager
-                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (locationGPS != null) {
-                LATITUDE = String.valueOf(locationGPS.getLatitude());
-                LONGITUDE = String.valueOf(locationGPS.getLongitude());
-            } else if (loc != null) {
-                LATITUDE = String.valueOf(loc.getLatitude());
-                LONGITUDE = String.valueOf(loc.getLongitude());
-            }
-        }
-        Log.w("Salestracker", "LATITUDE=" + LATITUDE);
-        Log.w("Salestracker", "Location1=" + LONGITUDE);
+//        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+//        if (locationManager != null) {
+//
+//            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                // TODO: Consider calling
+//                //    ActivityCompat#requestPermissions
+//                // here to request the missing permissions, and then overriding
+//                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                //                                          int[] grantResults)
+//                // to handle the case where the user grants the permission. See the documentation
+//                // for ActivityCompat#requestPermissions for more details.
+//                return;
+//            }
+//            Location loc = locationManager
+//                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//
+//            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//            if (locationGPS != null) {
+//                LATITUDE = String.valueOf(locationGPS.getLatitude());
+//                LONGITUDE = String.valueOf(locationGPS.getLongitude());
+//            } else if (loc != null) {
+//                LATITUDE = String.valueOf(loc.getLatitude());
+//                LONGITUDE = String.valueOf(loc.getLongitude());
+//            }
+//        }
+//        Log.w("Salestracker", "LATITUDE=" + LATITUDE);
+//        Log.w("Salestracker", "Location1=" + LONGITUDE);
 
         Geocoder geocoder;
         List<Address> addresses = null;
@@ -448,12 +473,10 @@ public class AndroidUtils {
     }
 
     protected static String getLATITUDE(Context context) {
-        getCurrentLocation(context);
         return LATITUDE;
     }
 
     protected static String getLONGITUDE(Context context) {
-        getCurrentLocation(context);
         return LONGITUDE;
     }
 
@@ -461,28 +484,20 @@ public class AndroidUtils {
         getCurrentLocation(context);
         return LOCATION;
     }
-
-    public static void setLONGITUDE(String LONGITUDE) {
-        AndroidUtils.LONGITUDE = LONGITUDE;
-    }
-
-    public static void setLATITUDE(String LATITUDE) {
-        AndroidUtils.LATITUDE = LATITUDE;
-    }
-
-    public static boolean isLocationServicesEnabled( String location, Context context){
-        LocationManager lm = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
-        boolean gps_enabled = false;
-
-        if (lm!=null) {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        }
-
-        if (gps_enabled && location.contains("N/A"))
-            return true;
-        else
-            return true;
-    }
+//
+//    public static boolean isLocationServicesEnabled( String location, Context context){
+//        LocationManager lm = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+//        boolean gps_enabled = false;
+//
+//        if (lm!=null) {
+//            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+//        }
+//
+//        if (gps_enabled && location.contains("N/A"))
+//            return true;
+//        else
+//            return true;
+//    }
 
     public static boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {

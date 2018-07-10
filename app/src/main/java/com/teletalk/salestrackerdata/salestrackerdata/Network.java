@@ -40,42 +40,49 @@ public class Network extends JobService {
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
 
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+    private BroadcastReceiver receiver;
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int status = NetworkUtil.getConnectivityStatusString(context);
-            String msgSentStatus = AndroidUtils.getfileContent(context, AndroidUtils.MSG_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
-            SaleTrackerTestClass.showMessageInToast(context, "Network: in");
-
-            if (status == 1 && msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
-                    && AndroidUtils.isSimConnected(context)) {
-                Log.w("SalesTrackerData:", "Network: Internet is Working.");
-                SaleTrackerTestClass.showMessageInToast(context, "Network: Internet is Working.");
-
-                // Calling the service class.
-                ComponentName componentName = new ComponentName(context, InternetIntentService.class);
-                JobInfo.Builder builder = new JobInfo.Builder(JOB_DATABASE_WRITE_ID, componentName);
-                builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
-                jobInfo = builder.build();
-                jobScheduler = ( JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-                jobScheduler.schedule(jobInfo);
-
-                unregisterReceiver(receiver);
-
-            }
-        }
-    };
     private LocationManager mLocationManager = null;
 
     @Override
-    public boolean onStartJob(JobParameters jobParameters) {
+    public boolean onStartJob(final JobParameters jobParameters) {
+        Log.e(TAG, "network CLass Onstartjob: ");
+
         initializeLocationManager();
         final IntentFilter intentFilters = new IntentFilter();
         intentFilters.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         intentFilters.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 
-        registerReceiver(receiver, intentFilters);
+        receiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int status = NetworkUtil.getConnectivityStatusString(context);
+                String msgSentStatus = AndroidUtils.getfileContent(context, AndroidUtils.MSG_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
+                SaleTrackerTestClass.showMessageInToast(context, "Network: in");
+            Log.w("SalesTrackerData:", "Network: In");
+
+                Log.w("SalesTrackerData:", "Network: in");
+                if (status == 1 && msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
+                        && AndroidUtils.isSimConnected(context)) {
+                    Log.w("SalesTrackerData:", "Network: Internet is Working.");
+                    SaleTrackerTestClass.showMessageInToast(context, "Network: Internet is Working.");
+
+                    // Calling the service class.
+                    ComponentName componentName = new ComponentName(context, InternetIntentService.class);
+                    JobInfo.Builder builder = new JobInfo.Builder(JOB_DATABASE_WRITE_ID, componentName);
+                    builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+                    jobInfo = builder.build();
+                    jobScheduler = ( JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+                    jobScheduler.schedule(jobInfo);
+
+                    unregisterReceiver(receiver);
+                    jobFinished(jobParameters, false);
+
+
+                }
+            }
+        };
 
         try {
             mLocationManager.requestLocationUpdates(
@@ -95,8 +102,10 @@ public class Network extends JobService {
         } catch (IllegalArgumentException ex) {
             Log.d(TAG, "gps provider does not exist " + ex.getMessage());
         }
-        jobFinished(jobParameters, false);
-        return false;
+//        jobFinished(jobParameters, false);
+        registerReceiver(receiver, intentFilters);
+
+        return true;
     }
 
     @Override
