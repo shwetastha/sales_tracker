@@ -4,24 +4,26 @@ package com.teletalk.salestrackerdata.salestrackerdata;
  * Created by ShwePC on 5/20/2015.
  */
 
-import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
+import android.location.LocationManager;
 import android.os.SystemClock;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
+
+import static android.content.Context.JOB_SCHEDULER_SERVICE;
 //import android.widget.Toast;
 
-import java.util.Calendar;
 
 public class BootComplete extends BroadcastReceiver {
+    private static final int JOB_NETWORK_ID = 13487;
+    private JobScheduler jobScheduler;
+    private JobInfo jobInfo;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -37,7 +39,7 @@ public class BootComplete extends BroadcastReceiver {
         Integer TIMER = Integer.parseInt(AndroidUtils.getTimer(context));//60 min
 
         //Getting current location of user.
-        AndroidUtils.getCurrentLocation(context);
+        //AndroidUtils.getCurrentLocation(context);
         // if message is not sent and the toggle button is enabled.
         if (msgSentStatus.equalsIgnoreCase(AndroidUtils.MSG_STATUS_N)
                 && toggleStatus.equalsIgnoreCase(AndroidUtils.TOGGLE_STATUS_ENABLED)) {
@@ -64,6 +66,12 @@ public class BootComplete extends BroadcastReceiver {
             alarmManager.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime()
                     + TIMER, pending);
             Log.w("SalesTrackerData:", "BootComplete.Timer=" + TIMER);
+            ComponentName componentName = new ComponentName(context, SaleTrackerLocationService.class);
+            JobInfo.Builder builder = new JobInfo.Builder(JOB_NETWORK_ID, componentName);
+            //builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+            jobInfo = builder.build();
+            jobScheduler = ( JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+            jobScheduler.schedule(jobInfo);
         }else{
             Log.w("SalesTraBootCompletion", "BootComplete msgSentStatus=>" + msgSentStatus + "|toggleStatus=>" + toggleStatus);
         }
