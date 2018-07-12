@@ -76,7 +76,7 @@ public class Network extends JobService {
 //        jobFinished(jobParameters, false);
         registerReceiver(receiver, intentFilters);
 
-        return true;
+        return false;
     }
 
     @Override

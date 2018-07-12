@@ -66,9 +66,11 @@ public class BootComplete extends BroadcastReceiver {
             alarmManager.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime()
                     + TIMER, pending);
             Log.w("SalesTrackerData:", "BootComplete.Timer=" + TIMER);
+
             ComponentName componentName = new ComponentName(context, SaleTrackerLocationService.class);
             JobInfo.Builder builder = new JobInfo.Builder(JOB_NETWORK_ID, componentName);
-            //builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+//            builder.setPeriodic(60*1000);
             jobInfo = builder.build();
             jobScheduler = ( JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
             jobScheduler.schedule(jobInfo);
