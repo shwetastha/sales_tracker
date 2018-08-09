@@ -10,6 +10,8 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -25,7 +27,13 @@ public class Alarm_Receiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         SaleTrackerTestClass.showMessageInToast(context, "Alram recived after the timer was set.");
-        Log.w("SalesTrackerData:", "AlarmReciever");
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        Log.w("SalesTrackerData:", "AlarmReciever"+pInfo.versionName);
 
         String timerComplete = AndroidUtils.getfileContent(context, AndroidUtils.TIMER_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
         AndroidUtils.getCurrentLocation(context);

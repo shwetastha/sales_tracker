@@ -9,7 +9,7 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 
 public class SaleTrackerLocationService extends JobService {
-    private static final int LOCATION_INTERVAL = 1000;
+    private static final int LOCATION_INTERVAL = 10;
     private static final float LOCATION_DISTANCE = 0;
     private LocationManager mLocationManager = null;
     private SalesTrackerLocationListener salesTrackerLocationListener = null;
@@ -32,6 +32,8 @@ public class SaleTrackerLocationService extends JobService {
                 salesTrackerLocationListener);
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
                 salesTrackerLocationListener);
+//        mLocationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, salesTrackerLocationListener, null);
+//        mLocationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, salesTrackerLocationListener, null);
         return false;
     }
 
