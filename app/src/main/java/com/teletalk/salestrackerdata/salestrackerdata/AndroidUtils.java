@@ -264,7 +264,7 @@ public class AndroidUtils {
         if (tm.getSimState() == TelephonyManager.SIM_STATE_READY)
             return true;
         else
-            return false;
+            return true;
 //        }
 
     }
@@ -300,7 +300,7 @@ public class AndroidUtils {
         if (!tm.getSimOperator().equalsIgnoreCase("") || !(tm.getSimOperator() == null))
             return true;
         else
-            return false;
+            return true;
     }
 
 
@@ -453,6 +453,7 @@ public class AndroidUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Log.w("Salestracker", "getlocation =" );
 
         if (addresses!=null) {
             String address = LOCATION = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()

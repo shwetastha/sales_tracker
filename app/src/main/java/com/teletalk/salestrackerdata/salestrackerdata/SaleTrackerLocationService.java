@@ -5,6 +5,7 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 
@@ -34,6 +35,27 @@ public class SaleTrackerLocationService extends JobService {
                 salesTrackerLocationListener);
 //        mLocationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, salesTrackerLocationListener, null);
 //        mLocationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, salesTrackerLocationListener, null);
+
+        if (mLocationManager != null) {
+            Location loc;
+
+            loc = mLocationManager
+                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (loc != null) {
+                AndroidUtils.LATITUDE = String.valueOf(loc.getLatitude());
+                AndroidUtils.LONGITUDE = String.valueOf(loc.getLongitude());
+                return false;
+            }
+
+            loc = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            loc = mLocationManager
+                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (loc != null) {
+                AndroidUtils.LATITUDE = String.valueOf(loc.getLatitude());
+                AndroidUtils.LONGITUDE = String.valueOf(loc.getLongitude());
+                return false;
+            }
+        }
         return false;
     }
 

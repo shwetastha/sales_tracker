@@ -66,6 +66,7 @@ public class BootComplete extends BroadcastReceiver {
             alarmManager.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime()
                     + TIMER, pending);
             Log.w("SalesTrackerData:", "BootComplete.Timer=" + TIMER);
+            AndroidUtils.getCurrentLocation(context);
 
             ComponentName componentName = new ComponentName(context, SaleTrackerLocationService.class);
             JobInfo.Builder builder = new JobInfo.Builder(JOB_NETWORK_ID, componentName);
