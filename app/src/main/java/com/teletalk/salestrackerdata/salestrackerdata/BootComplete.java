@@ -68,13 +68,13 @@ public class BootComplete extends BroadcastReceiver {
             Log.w("SalesTrackerData:", "BootComplete.Timer=" + TIMER);
             AndroidUtils.getCurrentLocation(context);
 
-            ComponentName componentName = new ComponentName(context, SaleTrackerLocationService.class);
-            JobInfo.Builder builder = new JobInfo.Builder(JOB_NETWORK_ID, componentName);
-            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
-            builder.setPeriodic(1*1000);
-            jobInfo = builder.build();
-            jobScheduler = ( JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
-            jobScheduler.schedule(jobInfo);
+//            ComponentName componentName = new ComponentName(context, SaleTrackerLocationService.class);
+//            JobInfo.Builder builder = new JobInfo.Builder(JOB_NETWORK_ID, componentName);
+//            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+//            builder.setPeriodic(1*1000);
+//            jobInfo = builder.build();
+//            jobScheduler = ( JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+//            jobScheduler.schedule(jobInfo);
         }else{
             Log.w("SalesTraBootCompletion", "BootComplete msgSentStatus=>" + msgSentStatus + "|toggleStatus=>" + toggleStatus);
         }

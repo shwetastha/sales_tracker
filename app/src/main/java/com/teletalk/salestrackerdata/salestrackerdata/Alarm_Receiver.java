@@ -36,7 +36,6 @@ public class Alarm_Receiver extends BroadcastReceiver {
         Log.w("SalesTrackerData:", "AlarmReciever"+pInfo.versionName);
 
         String timerComplete = AndroidUtils.getfileContent(context, AndroidUtils.TIMER_STATUS_FILE, AndroidUtils.MSG_STATUS_N);
-        AndroidUtils.getCurrentLocation(context);
 
         SaleTrackerTestClass.showMessageInToast(context, "Timer Finished");
 

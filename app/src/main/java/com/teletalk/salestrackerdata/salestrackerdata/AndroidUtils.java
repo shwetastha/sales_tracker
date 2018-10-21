@@ -40,7 +40,7 @@ public class AndroidUtils {
     protected static String MSG_STATUS_Y = "y";
     protected static String TIMER_TO_SUBTRACT = "timerToSub";
     protected static String TIMER_STARTED_ON = "timerStartedOn";
-    protected static String TIMER = "60";//in minutes
+    protected static String TIMER = "30";//in minutes
     protected static String LONGITUDE = "N/A", LATITUDE = "N/A", LOCATION = "N/A";
 
     protected static void create_file(Context context) {
