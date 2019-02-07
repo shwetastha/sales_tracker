@@ -1,6 +1,6 @@
 # README #
 
-##Sales Tracker Data Application##
+### Sales Tracker Data Application ###
 
 ### Summary ###
 
