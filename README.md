@@ -4,7 +4,7 @@
 
 ### Summary ###
 
-* This is an android application designed specifically to send information to a server through internet access. This application sends Imei no, Model no, Operator and Country_iso of android smart phone to server 202.166.205.39, which uses the following url "http://xxx.xxx.xxx.xx/sales_tracker/insert.php". It reads dumpsys file to retrieve IMEI information.
+* This is an android application designed specifically to send information to a server through internet access. This application sends Imei no, Model no, Operator and Country_iso of android smart phone to server, which uses the following url "http://xxx.xxx.xxx.xx/sales_tracker/insert.php". It reads dumpsys file to retrieve IMEI information.
 * Version 7.0
 
 ### Requirements ###
